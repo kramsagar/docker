@@ -1,0 +1,68 @@
+#what if i want to delete all stopped containers?
+
+root@rkcna:/home/rkyasan44# docker ps -a
+CONTAINER ID   IMAGE                         COMMAND                  CREATED          STATUS                        PORTS     NAMES
+a9cd20d33235   lovelearnlinux/webserver:v2   "/usr/sbin/httpd -D …"   39 minutes ago   Exited (0) 39 minutes ago               naughty_agnesi
+2b267dc0d797   lovelearnlinux/webserver:v1   "/usr/sbin/httpd -D …"   40 minutes ago   Exited (0) 40 minutes ago               practical_robinson
+3747f015872a   centos                        "sleep 10000"            52 minutes ago   Exited (137) 9 minutes ago              nginx5
+801957e4687f   centos                        "/bin/bash"              56 minutes ago   Exited (127) 55 minutes ago             nginx4
+9c267a631ebd   centos                        "sleep 10"               56 minutes ago   Exited (0) 56 minutes ago               nginx3
+39601d228394   centos                        "sleep 10"               59 minutes ago   Exited (0) 59 minutes ago               nginx2
+35100ec91268   centos                        "/bin/bash"              21 hours ago     Exited (0) 21 hours ago                 ub-test
+6e9fc65615c3   centos                        "--name ub-test /bin…"   21 hours ago     Created                                 elegant_elion
+33953ba94dfc   centos                        "-name ub-test /bin/…"   21 hours ago     Created                                 inspiring_sinoussi
+dfc5c10e6b3d   centos                        "--name ub-test /bin…"   21 hours ago     Created                                 cool_payne
+d4fa0147e29a   61395b4c586d                  "/docker-entrypoint.…"   22 hours ago     Exited (0) 4 hours ago                  xenodochial_beaver
+0ea4a948297a   61395b4c586d                  "/docker-entrypoint.…"   22 hours ago     Exited (0) 22 hours ago                 relaxed_bell
+48c386489d1f   61395b4c586d                  "/docker-entrypoint.…"   22 hours ago     Exited (0) 22 hours ago                 ecstatic_mendel
+7582be73483b   hello-world                   "/hello"                 22 hours ago     Exited (0) 22 hours ago                 agitated_proskuriakova
+root@rkcna:/home/rkyasan44# docker --help
+
+
+root@rkcna:/home/rkyasan44# docker container prune -f
+Deleted Containers:
+a9cd20d332350c4842ff4d650c4117951eab65a0574f94cf92a56402b31e871c
+2b267dc0d797f0351fda927b2c9c42ccf3ac44bf450f2fd9718851b65f92a016
+3747f015872a9370c017fccc706e5d792c3d75bf1d2100f5ecd94969b911c8a1
+801957e4687f2e4872cb9728ec5e09a9d40a8f6554716a81cfe7245113493272
+9c267a631ebd4a9077da7e2e1921ec1a2f316ff18d137ca8bc858be5f6c31d8c
+39601d2283946dd30d70088198f93dbf468f11b4aa7a1262dcf1e338854f239d
+35100ec9126850d856ad6d8e693f7163a5e1672b11d680d575e5b5125a95b317
+6e9fc65615c30f1e067fb27e2df623d604652d447d810f774ec127702fba8c6a
+33953ba94dfcd244a006c21a1cc4514ee8491782626cc811145f885d6864a927
+dfc5c10e6b3d1c2125d8e552b8146fd0e62f26ef303175dc2e5f02fcb169af30
+d4fa0147e29a8b511902c09dd7cb3717bba161fa07bacffeb2eb7c312e70e990
+0ea4a948297a501ef5e6241ffb6a6b2111da58da48e7c2b778af8a3c69dc83b6
+48c386489d1f3958cb86d4a57201fc22d07fc0ab1cd0a97189307f1ae3ee4ae3
+7582be73483b74e5af76e393002003596b684b4d48f058c588b826537a2d63b0
+
+Total reclaimed space: 1.704MB
+root@rkcna:/home/rkyasan44#
+
+root@rkcna:/home/rkyasan44# docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+root@rkcna:/home/rkyasan44#
+
+
+## ************** other approach *************************
+root@rkcna:/home/rkyasan44# docker ps -a
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS                            PORTS     NAMES
+7404a8057399   nginx     "/docker-entrypoint.…"   2 minutes ago   Exited (137) About a minute ago             nginxc
+a42ecea014da   nginx     "/docker-entrypoint.…"   2 minutes ago   Exited (137) About a minute ago             sometimesdie
+353d2dea8615   nginx     "/docker-entrypoint.…"   2 minutes ago   Exited (137) About a minute ago             neverdie
+
+root@rkcna:/home/rkyasan44# docker ps -aq
+7404a8057399
+a42ecea014da
+353d2dea8615
+
+root@rkcna:/home/rkyasan44# docker rm $(docker ps -aq)
+7404a8057399
+a42ecea014da
+353d2dea8615
+
+root@rkcna:/home/rkyasan44# docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+root@rkcna:/home/rkyasan44#
+
+

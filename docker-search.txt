@@ -1,0 +1,46 @@
+#to search the docker images in hub and docker pull search from local harddisk
+
+root@rkcna:/home/rkyasan44# docker search nginx
+NAME                                              DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+nginx                                             Official build of Nginx.                        19076     [OK]
+unit                                              Official build of NGINX Unit: Universal Web …   14        [OK]
+nginxinc/nginx-unprivileged                       Unprivileged NGINX Dockerfiles                  125
+nginx/nginx-ingress                               NGINX and  NGINX Plus Ingress Controllers fo…   81
+nginx/nginx-prometheus-exporter                   NGINX Prometheus Exporter for NGINX and NGIN…   33
+nginx/unit                                        NGINX Unit is a dynamic web and application …   64
+nginxinc/nginx-s3-gateway                         Authenticating and caching gateway based on …   2
+nginx/nginx-ingress-operator                      NGINX Ingress Operator for NGINX and NGINX P…   1
+nginxinc/amplify-agent                            NGINX Amplify Agent docker repository           1
+nginx/nginx-quic-qns                              NGINX QUIC interop                              1
+nginxinc/ingress-demo                             Ingress Demo                                    4
+nginxproxy/nginx-proxy                            Automated Nginx reverse proxy for docker con…   108
+nginxproxy/acme-companion                         Automated ACME SSL certificate generation fo…   124
+bitnami/nginx                                     Bitnami nginx Docker Image                      174                  [OK]
+bitnami/nginx-ingress-controller                  Bitnami Docker Image for NGINX Ingress Contr…   29                   [OK]
+ubuntu/nginx                                      Nginx, a high-performance reverse proxy & we…   100
+nginxinc/nginmesh_proxy_debug                                                                     0
+nginxproxy/docker-gen                             Generate files from docker container meta-da…   12
+nginxinc/mra-fakes3                                                                               0
+kasmweb/nginx                                     An Nginx image based off nginx:alpine and in…   6
+rancher/nginx-ingress-controller                                                                  11
+nginxinc/ngx-rust-tool                                                                            0
+nginxinc/mra_python_base                                                                          0
+nginxinc/nginmesh_proxy_init                                                                      0
+rancher/nginx-ingress-controller-defaultbackend                                                   2
+root@rkcna:/home/rkyasan44#
+
+root@rkcna:/home/rkyasan44# docker search nginx -f "is-official=true"
+NAME      DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+nginx     Official build of Nginx.                        19076     [OK]
+unit      Official build of NGINX Unit: Universal Web …   14        [OK]
+root@rkcna:/home/rkyasan44#
+
+
+root@rkcna:/home/rkyasan44# docker search nginx --limit 2
+NAME      DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+nginx     Official build of Nginx.                        19076     [OK]
+unit      Official build of NGINX Unit: Universal Web …   14        [OK]
+root@rkcna:/home/rkyasan44#
+
+
+

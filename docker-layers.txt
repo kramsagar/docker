@@ -1,0 +1,30 @@
+root@rkcna:/home/rkyasan44# docker run lovelearnlinux/webserver:v1
+Unable to find image 'lovelearnlinux/webserver:v1' locally
+v1: Pulling from lovelearnlinux/webserver
+8a29a15cefae: Pull complete
+eabe6c48556e: Pull complete
+dd4435497983: Pull complete
+Digest: sha256:ac9ab88604c58e12ada773e284f2f19d7e7a1564f741b2a0cc7f120ad8740b88
+Status: Downloaded newer image for lovelearnlinux/webserver:v1
+
+######### in above it downloaded 3 layers.
+
+root@rkcna:/home/rkyasan44# docker images
+REPOSITORY                 TAG       IMAGE ID       CREATED        SIZE
+nginx                      latest    61395b4c586d   10 days ago    187MB
+hello-world                latest    9c7a54a9a43c   4 months ago   13.3kB
+centos                     latest    5d0da3dc9764   2 years ago    231MB
+lovelearnlinux/webserver   v1        083524bb2f84   3 years ago    277MB
+
+root@rkcna:/home/rkyasan44# docker run lovelearnlinux/webserver:v2
+Unable to find image 'lovelearnlinux/webserver:v2' locally
+v2: Pulling from lovelearnlinux/webserver
+8a29a15cefae: Already exists
+eabe6c48556e: Already exists
+b543811563e2: Pull complete
+Digest: sha256:eea05b35b5159ed4e825935df2ed336317693eee40d568d2b4bee9d3ba4b7005
+Status: Downloaded newer image for lovelearnlinux/webserver:v2
+
+######### in above it downloaded only 1 layer. as it was found 2 layers already exist in local machine.
+######## it uses existing layer when your try to download the images.
+

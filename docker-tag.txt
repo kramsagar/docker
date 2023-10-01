@@ -1,0 +1,88 @@
+#in jan the tag is latest for mysql image, then after march then again new version of mysql become latest.
+#then the tag which is latest for running docker images or container what will happen when i pull the latest in march
+
+#so how to stictly want same image in jan or future to avoid conflict of getting latest images instead of point in time latest.
+#then you need to use checksum value of image instead of tags of images.
+
+root@rkcna:/home/rkyasan44# docker images
+REPOSITORY                 TAG       IMAGE ID       CREATED        SIZE
+nginx                      latest    61395b4c586d   10 days ago    187MB
+hello-world                latest    9c7a54a9a43c   4 months ago   13.3kB
+centos                     latest    5d0da3dc9764   2 years ago    231MB
+lovelearnlinux/webserver   v2        f9386045a7d3   3 years ago    277MB
+lovelearnlinux/webserver   v1        083524bb2f84   3 years ago    277MB
+
+root@rkcna:/home/rkyasan44# docker image ls
+REPOSITORY                 TAG       IMAGE ID       CREATED        SIZE
+nginx                      latest    61395b4c586d   10 days ago    187MB
+hello-world                latest    9c7a54a9a43c   4 months ago   13.3kB
+centos                     latest    5d0da3dc9764   2 years ago    231MB
+lovelearnlinux/webserver   v2        f9386045a7d3   3 years ago    277MB
+lovelearnlinux/webserver   v1        083524bb2f84   3 years ago    277MB
+
+root@rkcna:/home/rkyasan44# docker image ls --digests
+REPOSITORY                 TAG       DIGEST                                                                    IMAGE ID       CREATED        SIZE
+nginx                      latest    sha256:32da30332506740a2f7c34d5dc70467b7f14ec67d912703568daff790ab3f755   61395b4c586d   10 days ago    187MB
+hello-world                latest    sha256:4f53e2564790c8e7856ec08e384732aa38dc43c52f02952483e3f003afbf23db   9c7a54a9a43c   4 months ago   13.3kB
+centos                     latest    sha256:a27fd8080b517143cbbbab9dfb7c8571c40d67d534bbdee55bd6c473f432b177   5d0da3dc9764   2 years ago    231MB
+lovelearnlinux/webserver   v2        sha256:eea05b35b5159ed4e825935df2ed336317693eee40d568d2b4bee9d3ba4b7005   f9386045a7d3   3 years ago    277MB
+lovelearnlinux/webserver   v1        sha256:ac9ab88604c58e12ada773e284f2f19d7e7a1564f741b2a0cc7f120ad8740b88   083524bb2f84   3 years ago    277MB
+root@rkcna:/home/rkyasan44#
+
+
+root@rkcna:/home/rkyasan44# docker image ls --digests
+REPOSITORY                 TAG       DIGEST                                                                    IMAGE ID       CREATED        SIZE
+nginx                      latest    sha256:32da30332506740a2f7c34d5dc70467b7f14ec67d912703568daff790ab3f755   61395b4c586d   10 days ago    187MB
+hello-world                latest    sha256:4f53e2564790c8e7856ec08e384732aa38dc43c52f02952483e3f003afbf23db   9c7a54a9a43c   4 months ago   13.3kB
+centos                     latest    sha256:a27fd8080b517143cbbbab9dfb7c8571c40d67d534bbdee55bd6c473f432b177   5d0da3dc9764   2 years ago    231MB
+lovelearnlinux/webserver   v2        sha256:eea05b35b5159ed4e825935df2ed336317693eee40d568d2b4bee9d3ba4b7005   f9386045a7d3   3 years ago    277MB
+lovelearnlinux/webserver   v1        sha256:ac9ab88604c58e12ada773e284f2f19d7e7a1564f741b2a0cc7f120ad8740b88   083524bb2f84   3 years ago    277MB
+
+root@rkcna:/home/rkyasan44# cat > nginx.image
+nginx@sha256:32da30332506740a2f7c34d5dc70467b7f14ec67d912703568daff790ab3f755
+^C
+
+root@rkcna:/home/rkyasan44# cat nginx.image
+nginx@sha256:32da30332506740a2f7c34d5dc70467b7f14ec67d912703568daff790ab3f755
+
+root@rkcna:/home/rkyasan44# docker rmi nginx:latest
+Error response from daemon: conflict: unable to remove repository reference "nginx:latest" (must force) - container d4fa0147e29a is using its referenced image 61395b4c586d
+
+root@rkcna:/home/rkyasan44# docker rmi -f nginx
+Untagged: nginx:latest
+Untagged: nginx@sha256:32da30332506740a2f7c34d5dc70467b7f14ec67d912703568daff790ab3f755
+Deleted: sha256:61395b4c586da2b9b3b7ca903ea6a448e6783dfdd7f768ff2c1a0f3360aaba99
+
+root@rkcna:/home/rkyasan44# docker image ls --digests
+REPOSITORY                 TAG       DIGEST                                                                    IMAGE ID       CREATED        SIZE
+hello-world                latest    sha256:4f53e2564790c8e7856ec08e384732aa38dc43c52f02952483e3f003afbf23db   9c7a54a9a43c   4 months ago   13.3kB
+centos                     latest    sha256:a27fd8080b517143cbbbab9dfb7c8571c40d67d534bbdee55bd6c473f432b177   5d0da3dc9764   2 years ago    231MB
+lovelearnlinux/webserver   v2        sha256:eea05b35b5159ed4e825935df2ed336317693eee40d568d2b4bee9d3ba4b7005   f9386045a7d3   3 years ago    277MB
+lovelearnlinux/webserver   v1        sha256:ac9ab88604c58e12ada773e284f2f19d7e7a1564f741b2a0cc7f120ad8740b88   083524bb2f84   3 years ago    277MB
+
+#Now i want to pull specific image with digest name instead of image tag
+
+
+root@rkcna:/home/rkyasan44# docker pull $(cat nginx.image)
+docker.io/library/nginx@sha256:32da30332506740a2f7c34d5dc70467b7f14ec67d912703568daff790ab3f755: Pulling from library/nginx
+a803e7c4b030: Already exists
+8b625c47d697: Already exists
+4d3239651a63: Already exists
+0f816efa513d: Already exists
+01d159b8db2f: Already exists
+5fb9a81470f3: Already exists
+9b1e1e7164db: Already exists
+Digest: sha256:32da30332506740a2f7c34d5dc70467b7f14ec67d912703568daff790ab3f755
+Status: Downloaded newer image for nginx@sha256:32da30332506740a2f7c34d5dc70467b7f14ec67d912703568daff790ab3f755
+docker.io/library/nginx@sha256:32da30332506740a2f7c34d5dc70467b7f14ec67d912703568daff790ab3f755
+
+root@rkcna:/home/rkyasan44# docker images
+REPOSITORY                 TAG       IMAGE ID       CREATED        SIZE
+nginx                      <none>    61395b4c586d   10 days ago    187MB
+hello-world                latest    9c7a54a9a43c   4 months ago   13.3kB
+centos                     latest    5d0da3dc9764   2 years ago    231MB
+lovelearnlinux/webserver   v2        f9386045a7d3   3 years ago    277MB
+lovelearnlinux/webserver   v1        083524bb2f84   3 years ago    277MB
+root@rkcna:/home/rkyasan44#
+
+

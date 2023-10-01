@@ -1,0 +1,113 @@
+#if in case of server reboot or docker daemon got restart then what happens to our containers running on vm.
+#by default observation: Containers wont comeup bydefault
+
+#After stopping docker
+root@rkcna:/home/rkyasan44# docker ps
+CONTAINER ID   IMAGE     COMMAND         CREATED          STATUS          PORTS     NAMES
+3747f015872a   centos    "sleep 10000"   42 minutes ago   Up 42 minutes             nginx5
+root@rkcna:/home/rkyasan44# systemctl status docker
+● docker.service - Docker Application Container Engine
+     Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sat 2023-09-30 19:39:12 IST; 22h ago
+TriggeredBy: ● docker.socket
+       Docs: https://docs.docker.com
+   Main PID: 3237 (dockerd)
+      Tasks: 10
+     Memory: 821.8M
+        CPU: 34.724s
+     CGroup: /system.slice/docker.service
+             └─3237 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+
+Oct 01 16:53:47 rkcna dockerd[3237]: time="2023-10-01T16:53:47.129175602+05:30" level=info msg="ignoring event" container=9c267a63>
+Oct 01 16:53:47 rkcna dockerd[3237]: time="2023-10-01T16:53:47.142517664+05:30" level=warning msg="failed to close stdin: task 9c2>
+Oct 01 16:54:48 rkcna dockerd[3237]: time="2023-10-01T16:54:48.281137371+05:30" level=info msg="ignoring event" container=801957e4>
+Oct 01 16:54:48 rkcna dockerd[3237]: time="2023-10-01T16:54:48.296428635+05:30" level=warning msg="failed to close stdin: task 801>
+Oct 01 17:08:27 rkcna dockerd[3237]: time="2023-10-01T17:08:27.879542062+05:30" level=error msg="Not continuing with pull after er>
+Oct 01 17:08:35 rkcna dockerd[3237]: time="2023-10-01T17:08:35.896597118+05:30" level=info msg="Pull session cancelled"
+Oct 01 17:08:37 rkcna dockerd[3237]: time="2023-10-01T17:08:37.881068000+05:30" level=error msg="Not continuing with pull after er>
+Oct 01 17:10:09 rkcna dockerd[3237]: time="2023-10-01T17:10:09.769560719+05:30" level=info msg="ignoring event" container=2b267dc0>
+Oct 01 17:10:38 rkcna dockerd[3237]: time="2023-10-01T17:10:38.764649624+05:30" level=info msg="ignoring event" container=a9cd20d3>
+Oct 01 17:34:28 rkcna dockerd[3237]: time="2023-10-01T17:34:28.793467635+05:30" level=warning msg="reference for unknown type: " d>
+lines 1-22/22 (END)
+^C
+root@rkcna:/home/rkyasan44# systemctl stop docker
+Warning: Stopping docker.service, but it can still be activated by:
+  docker.socket
+root@rkcna:/home/rkyasan44# docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+root@rkcna:/home/rkyasan44#
+
+
+### After starting the docker
+root@rkcna:/home/rkyasan44# systemctl start docker
+
+root@rkcna:/home/rkyasan44# docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+root@rkcna:/home/rkyasan44#
+
+root@rkcna:/home/rkyasan44# docker ps -a
+CONTAINER ID   IMAGE                         COMMAND                  CREATED          STATUS                        PORTS     NAMES
+3747f015872a   centos                        "sleep 10000"            45 minutes ago   Exited (137) 2 minutes ago              nginx5
+
+#************* There is concept called - selfheal containers **************
+
+root@rkcna:/home/rkyasan44# docker run -d --name neverdie --restart always nginx sleep 1000000;
+353d2dea8615fcf49580f4b06e728d0ae9dcc7428584265b9dd9595e75be8d39
+root@rkcna:/home/rkyasan44# docker run -d --name sometimesdie --restart unless-stopped  nginx sleep 1000000;
+a42ecea014da1866d1e7561c1978f96e7bc8db3b45e9bb2a122952f2b04fdf87
+root@rkcna:/home/rkyasan44# docker run -d --name nginxc nginx sleep 1000000;
+7404a8057399951e323577438efa5585f66eef62ba06df0bb07f2655ebe50273
+
+root@rkcna:/home/rkyasan44# docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS     NAMES
+7404a8057399   nginx     "/docker-entrypoint.…"   6 seconds ago    Up 5 seconds    80/tcp    nginxc
+a42ecea014da   nginx     "/docker-entrypoint.…"   24 seconds ago   Up 23 seconds   80/tcp    sometimesdie
+353d2dea8615   nginx     "/docker-entrypoint.…"   37 seconds ago   Up 36 seconds   80/tcp    neverdie
+
+
+root@rkcna:/home/rkyasan44# systemctl restart docker
+
+root@rkcna:/home/rkyasan44# docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED              STATUS         PORTS     NAMES
+a42ecea014da   nginx     "/docker-entrypoint.…"   52 seconds ago       Up 8 seconds   80/tcp    sometimesdie
+353d2dea8615   nginx     "/docker-entrypoint.…"   About a minute ago   Up 8 seconds   80/tcp    neverdie
+root@rkcna:/home/rkyasan44#
+
+#***************** stop container manually (restart policy - always - this brings up container if your restart docker daemon) ***********
+
+914212642c2ac19606e02d1a8fadbe0ac30b0d9f535bc26879ee83110b929902
+root@rkcna:/home/rkyasan44# docker ps
+CONTAINER ID   IMAGE     COMMAND          CREATED         STATUS         PORTS     NAMES
+914212642c2a   centos    "sleep 100000"   3 seconds ago   Up 2 seconds             neverdie
+root@rkcna:/home/rkyasan44# docker stop 914
+914
+root@rkcna:/home/rkyasan44# docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+root@rkcna:/home/rkyasan44# systemctl restart docker
+root@rkcna:/home/rkyasan44# docker ps
+CONTAINER ID   IMAGE     COMMAND          CREATED          STATUS        PORTS     NAMES
+914212642c2a   centos    "sleep 100000"   34 seconds ago   Up 1 second             neverdie
+root@rkcna:/home/rkyasan44#
+
+###************* stop container manuall (restart policy - unless-stopped) #As your stopped before daemon restart, so it wont being up this container.
+
+root@rkcna:/home/rkyasan44# docker run -d --name sometimes --restart unless-stopped centos sleep 100000;
+2194339dce3d5d1b9a1ba22aa7132ddf67eee27bd2ce00cf5f740d86f7187f04
+
+root@rkcna:/home/rkyasan44# docker ps
+CONTAINER ID   IMAGE     COMMAND          CREATED         STATUS              PORTS     NAMES
+2194339dce3d   centos    "sleep 100000"   6 seconds ago   Up 5 seconds                  sometimes
+914212642c2a   centos    "sleep 100000"   2 minutes ago   Up About a minute             neverdie
+root@rkcna:/home/rkyasan44# docker stop neverdie sometimes
+neverdie
+sometimes
+root@rkcna:/home/rkyasan44# docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+root@rkcna:/home/rkyasan44# systemctl restart docker
+root@rkcna:/home/rkyasan44# docker ps
+CONTAINER ID   IMAGE     COMMAND          CREATED         STATUS         PORTS     NAMES
+914212642c2a   centos    "sleep 100000"   2 minutes ago   Up 2 seconds             neverdie
+root@rkcna:/home/rkyasan44#
+
+
+
