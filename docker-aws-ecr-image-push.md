@@ -44,9 +44,11 @@ docker tag msapps:latest 211125369393.dkr.ecr.us-east-1.amazonaws.com/msapps:lat
 
 docker push 211125369393.dkr.ecr.us-east-1.amazonaws.com/msapps:latest
 
+![alt text](image-6.png)
 
+![alt text](image-7.png)
 
-
+docker image uploaded successfully to ECR!!!!
 
 
 
