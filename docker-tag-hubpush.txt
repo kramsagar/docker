@@ -1,0 +1,49 @@
+root@ram-node1:~/flask-proj/awesome-compose/flask/app# docker login -u rkayasan44
+Password: 
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+
+docker tag flaskapp rkayasan44/flaskapps:1.0 #docker tag source user/repo:version
+
+root@ram-node1:~/flask-proj/awesome-compose/flask/app# docker images
+REPOSITORY             TAG         IMAGE ID       CREATED        SIZE
+flaskapp               latest      d7dc38eafd30   2 hours ago    289MB
+rkayasan44/flaskapps   1.0         d7dc38eafd30   2 hours ago    289MB
+
+
+root@ram-node1:~/flask-proj/awesome-compose/flask/app# docker push rkayasan44/microapps:1.0 ##docker push <hub-user>/<repo-name>:<tag>
+The push refers to repository [docker.io/rkayasan44/microapps]
+451e981d878b: Pushed 
+6ba621fef48c: Pushed 
+f8fdd4512ab6: Pushed 
+f0f9807aa891: Pushed 
+8036d290deaa: Pushed 
+16d7a774de98: Pushed 
+2e6c342f303e: Pushed 
+ba46b030d11a: Pushed 
+1e078693e15e: Pushed 
+6597141b676f: Pushed 
+2b4aacde20ab: Pushed 
+02f2bcb26af5: Pushed 
+1.0: digest: sha256:bf428335e326266ad94b34f3d62f850de2b79a7c74abf69c973c67c02197961c size: 2829
+root@ram-node1:~/flask-proj/awesome-compose/flask/app# history
+
+=========================================================================================================
+>> go to site: https://hub.docker.com/repository/docker/rkayasan44/microapps/general
+=========================================================================================================
+
+root@ram-node1:~/flask-proj/awesome-compose/flask/app# docker run -d --name=flaskapp456 rkayasan44/microapps:1.0
+
+d4a7439fa5f4648939f54a93b6baa105e4bc3d9a01420edde776774a9cf1da0e
+root@ram-node1:~/flask-proj/awesome-compose/flask/app# docker ps
+CONTAINER ID   IMAGE                      COMMAND                  CREATED         STATUS         PORTS                                       NAMES
+d4a7439fa5f4   rkayasan44/microapps:1.0   "python3 app.py"         6 seconds ago   Up 5 seconds                                               flaskapp456
+f5e78dee10ea   flaskapp                   "python3 app.py"         2 hours ago     Up 2 hours     0.0.0.0:83->8000/tcp, :::83->8000/tcp       flask-app-9
+6c375a4373c9   flaskapp                   "python3 app.py"         2 hours ago     Up 2 hours     0.0.0.0:82->8000/tcp, :::82->8000/tcp       flask-app-8
+a015593c79b8   flaskapp                   "python3 app.py"         2 hours ago     Up 2 hours     0.0.0.0:81->8000/tcp, :::81->8000/tcp       flask-app-5
+2bdc2557366b   flask-web                  "python3 app.py"         2 hours ago     Up 2 hours     0.0.0.0:8000->8000/tcp, :::8000->8000/tcp   flask-web-1
+eea6353dce10   voting-app                 "gunicorn app:app -b…"   11 hours ago    Up 11 hours    0.0.0.0:5000->80/tcp, :::5000->80/tcp       modest_elbakyan
+root@ram-node1:~/flask-proj/awesome-compose/flask/app# 
